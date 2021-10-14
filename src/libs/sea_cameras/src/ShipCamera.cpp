@@ -143,10 +143,10 @@ void SHIP_CAMERA::Move(float fDeltaTime)
         GetAIObj()->GetBoxsize() * CVECTOR(SCMR_BOXSCALE_X * 0.5f, SCMR_BOXSCALE_Y * 0.5f, SCMR_BOXSCALE_Z * 0.5f);
     boxSize.x += boxSize.y;
     boxSize.z += boxSize.y;
-    const auto maxRad = boxSize.z * 2.0f;
+    const auto maxRad = (boxSize.z + boxSize.x) * 2.0f;
     // Semi-axes of the ellipsoid along which the camera moves
     const auto a = boxSize.x * 1.2f + fDistance * (maxRad - boxSize.x * 1.2f); // x
-    const auto b = boxSize.y * 1.5f + fDistance * (70.0f - boxSize.y * 1.5f);  // y
+    const auto b = boxSize.y * 1.5f + fDistance * (65.0f + std::min(boxSize.y, 20.0f) - boxSize.y * 1.5f); // y
     const auto c = boxSize.z * 1.2f + fDistance * (maxRad - boxSize.z * 1.2f); // z
     // Find the position of the camera on the ellipsoid
     vCenter.y += 0.5f * boxSize.y;
@@ -184,7 +184,7 @@ void SHIP_CAMERA::Move(float fDeltaTime)
     if (vPos.y > oldPosY)
         vCenter.y += vPos.y - oldPosY;
     // Set new camera
-    vCenter.y += fDistance * 2.0f * boxSize.y;
+    vCenter.y += fDistance * boxSize.y * 2.0f / (boxSize.y / 8.0f);
     pRS->SetCamera(vPos, vCenter, CVECTOR(0.0f, 1.0f, 0.0f));
     pRS->SetPerspective(GetPerspective());
 }
