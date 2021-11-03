@@ -285,7 +285,7 @@ def potc_coas_batch_convert(
                         if 'AddCharacterModel(model);' in line:
                             model_found = False
                             model = storm_model(model_list, nh_dir, output_dir)
-                            if not model.coas_ready and model.sex is not 'None':
+                            if not model.coas_ready and model.sex is not 'None' and os.path.exists(model.filepath):
                                 bpy.ops.object.select_all(action='SELECT')
                                 bpy.ops.object.delete()
 
