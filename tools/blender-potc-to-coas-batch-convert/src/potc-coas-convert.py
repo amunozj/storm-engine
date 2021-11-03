@@ -293,7 +293,7 @@ def potc_coas_batch_convert(
                                 print(model.filepath, model.textures_path, model.an_path, '\nhead', model.fix_coas_man_head, '\nmc2p', model.convert_coas_to_potc_man, '\nmp2c', model.convert_potc_to_coas_man, '\nwc2p', model.convert_coas_to_potc_woman, '\nwp2c', model.convert_potc_to_coas_woman)
                                 bpy.ops.storm.import_gm(filepath_in=model.filepath, 
                                                         textures_path=model.textures_path,
-                                                        an_path='',
+                                                        an_path=model.an_path,
                                                         fix_coas_man_head=model.fix_coas_man_head,
                                                         convert_coas_to_potc_man=model.convert_coas_to_potc_man,
                                                         convert_potc_to_coas_man=model.convert_potc_to_coas_man,
@@ -313,7 +313,10 @@ def potc_coas_batch_convert(
                                 collection = bpy.data.collections.get(model.model)
                                 for obj in collection.objects:
                                     bpy.data.objects.remove(obj, do_unlink=True)
-                                bpy.data.collections.remove(collection)                                
+                                bpy.data.collections.remove(collection)
+
+                                # Open new file
+                                bpy.ops.wm.read_homefile()                           
 
                             model.print_to_file(initModelsOutputFile)
 
