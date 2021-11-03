@@ -166,7 +166,8 @@ class storm_model:
             self.coas_ready = 'coas' in self.model_parameters['ani']
 
         # Assemble model file name
-        self.model_file = self.model_parameters['id'].split('"')[1] + ".gm"
+        self.model = self.model_parameters['id'].split('"')[1]
+        self.model_file = self.model + ".gm"
 
         # clean sex string
         if 'woman' in self.model_parameters['sex']:
@@ -241,6 +242,8 @@ def potc_coas_batch_convert(
     initModelsOutputFile = output_dir + '/PROGRAM/Models/initModels.c'
     initModelsOutputFile = open(initModelsOutputFile, 'w')
     
+    # max_models = 30
+    # nmodels = 0
 
     model_definition_start = False
     model_found = False
@@ -285,15 +288,15 @@ def potc_coas_batch_convert(
                         if 'AddCharacterModel(model);' in line:
                             model_found = False
                             model = storm_model(model_list, nh_dir, output_dir)
-                            if not model.coas_ready and model.sex is not 'None':
+                            if not model.coas_ready and model.sex is not 'None':# and nmodels<max_models:
                                 bpy.ops.object.select_all(action='SELECT')
                                 bpy.ops.object.delete()
 
                                 # Import
-                                print(model.filepath, model.textures_path, model.an_path, model.fix_coas_man_head, model.convert_coas_to_potc_man, model.convert_potc_to_coas_man, model.convert_coas_to_potc_woman, model.convert_potc_to_coas_woman)
+                                print(model.filepath, model.textures_path, model.an_path, '\nhead', model.fix_coas_man_head, '\nmc2p', model.convert_coas_to_potc_man, '\nmp2c', model.convert_potc_to_coas_man, '\nwc2p', model.convert_coas_to_potc_woman, '\nwp2c', model.convert_potc_to_coas_woman)
                                 bpy.ops.storm.import_gm(filepath_in=model.filepath, 
                                                         textures_path=model.textures_path,
-                                                        an_path=model.an_path,
+                                                        an_path='',#model.an_path,
                                                         fix_coas_man_head=model.fix_coas_man_head,
                                                         convert_coas_to_potc_man=model.convert_coas_to_potc_man,
                                                         convert_potc_to_coas_man=model.convert_potc_to_coas_man,
@@ -308,7 +311,15 @@ def potc_coas_batch_convert(
                                 # Export
                                 bpy.ops.storm.export_gm(filepath_out=model.filepath_out)
                                 model.model_parameters['ani'] = f'"{model.sex}_coas";'
+
+                                # Clear collection
+                                collection = bpy.data.collections.get(model.model)
+                                for obj in collection.objects:
+                                    bpy.data.objects.remove(obj, do_unlink=True)
+                                bpy.data.collections.remove(collection)                                
+
                             model.print_to_file(initModelsOutputFile)
+                            # nmodels+=1
 
             else:
                 initModelsOutputFile.write(line)
