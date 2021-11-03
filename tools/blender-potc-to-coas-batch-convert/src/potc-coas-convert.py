@@ -196,6 +196,23 @@ class storm_model:
         self.filepath_out = self.output_dir + f'/RESOURCE/MODELS/Characters/{self.model_file}'
 
 
+    def print_to_file(self, initModelsOutputFile):
+        """
+        Function to print model into file
+
+        Parameters
+        ----------
+        initModelsOutputFile: file
+            file where to print the lines of each model       
+        """
+
+        for key, value in self.model_parameters.items():
+            initModelsOutputFile.write(f'\tmodel.{key} = {value}\n')
+
+        for line in self.comments_and_ending:
+            initModelsOutputFile.write(line)
+
+
 def potc_coas_batch_convert(
     nh_dir=None,
     output_dir=None
