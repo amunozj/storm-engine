@@ -160,10 +160,13 @@ class storm_model:
         if 'sex' not in self.model_parameters:
             self.model_parameters['sex'] = '"man";'
 
-        # Store flag to indicate that the model has already been converted
-        self.coas_ready = False
+        # Store flag to indicate that the model has an animation different than "man" or "woman_sit"
+        self.standard_ani = True
         if 'ani' in self.model_parameters:
-            self.coas_ready = 'coas' in self.model_parameters['ani']
+            if self.model_parameters['ani'] == '"woman_sit";' or self.model_parameters['ani'] == '"man";':
+                self.standard_ani = True
+            else:
+                self.standard_ani = False
 
         # Assemble model file name
         self.model = self.model_parameters['id'].split('"')[1]
@@ -285,7 +288,7 @@ def potc_coas_batch_convert(
                         if 'AddCharacterModel(model);' in line:
                             model_found = False
                             model = storm_model(model_list, nh_dir, output_dir)
-                            if not model.coas_ready and model.sex is not 'None' and os.path.exists(model.filepath):
+                            if model.standard_ani and model.sex is not 'None' and os.path.exists(model.filepath):
                                 bpy.ops.object.select_all(action='SELECT')
                                 bpy.ops.object.delete()
 
