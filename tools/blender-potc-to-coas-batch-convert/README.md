@@ -13,7 +13,7 @@ It requires the target folder to have the 'man_coas.ani' and 'woman_coas.ani' (n
 You need to add blender to your system path so that it can run from the command line on the location of the script.
 
 
-The script creates a new initModels.c adding the COAS animation.
+The script ```potc-coas-convert.py``` creates a new initModels.c adding the COAS animation.  The script ```potc_sf_convert.py``` is just a test file that converts a single file.  I left it in there in case someone wants to use it as a template.
 
 
 ## Blender Usage
